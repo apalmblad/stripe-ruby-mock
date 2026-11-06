@@ -1,6 +1,6 @@
 module StripeMock
   module Compat
-    # stripe 13.x
+    # stripe >= 13
     class V13 < Base
       HEADERS = %w[request-id stripe-account-id stripe-version stripe-version-stabl idempotency-key content-type].freeze
 
@@ -36,6 +36,14 @@ module StripeMock
         return super unless args.length == 6
 
         args.first(2)
+      end
+
+      def pin_version(args, kwargs)
+        return [args, kwargs] unless args.length == 6
+
+        args = args.dup
+        args[4] = { stripe_version: active_client.config.api_version }.merge(args[4] || {})
+        [args, kwargs]
       end
 
       def respond(body, request)
