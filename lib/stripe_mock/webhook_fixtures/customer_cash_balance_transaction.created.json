@@ -1,0 +1,36 @@
+{
+  "id": "evt_000000000000000000000000",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "created": 1765911129,
+  "data": {
+    "object": {
+      "id": "ccsbtxn_00000000000000",
+      "object": "customer_cash_balance_transaction",
+      "created": 1765911128,
+      "currency": "usd",
+      "customer": "cus_00000000000000",
+      "ending_balance": 5000,
+      "funded": {
+        "bank_transfer": {
+          "reference": "REF-4242",
+          "type": "us_bank_transfer",
+          "us_bank_transfer": {
+            "network": "ach",
+            "sender_name": "Jenny Rosen"
+          }
+        }
+      },
+      "livemode": false,
+      "net_amount": 5000,
+      "type": "funded"
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": "req_00000000000000",
+    "idempotency_key": "8ef8d98d-0b2d-44d2-a3bf-20ffe2cbd408"
+  },
+  "type": "customer_cash_balance_transaction.created"
+}

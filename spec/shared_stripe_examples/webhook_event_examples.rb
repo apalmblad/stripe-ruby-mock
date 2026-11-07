@@ -65,6 +65,15 @@ shared_examples 'Webhook Events API' do
     Stripe.api_version = nil
   end
 
+  it "builds a customer cash balance transaction funded by a bank transfer" do
+    transaction = StripeMock.mock_webhook_event('customer_cash_balance_transaction.created', net_amount: 2500).data.object
+
+    expect(transaction.object).to eq('customer_cash_balance_transaction')
+    expect(transaction.type).to eq('funded')
+    expect(transaction.net_amount).to eq(2500)
+    expect(transaction.funded.bank_transfer.us_bank_transfer.network).to eq('ach')
+  end
+
   it "matches the list of webhooks with the folder of fixtures" do
     events = StripeMock::Webhooks.event_list.to_set
     file_names = Dir['./lib/stripe_mock/webhook_fixtures/*'].map {|f| File.basename(f, '.json')}.to_set
