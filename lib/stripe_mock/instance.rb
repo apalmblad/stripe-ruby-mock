@@ -186,6 +186,11 @@ module StripeMock
       id
     end
 
+    def new_id(prefix)
+      # Stripe ids must be strings
+      "#{StripeMock.global_id_prefix}#{prefix}_#{@id_counter += 1}"
+    end
+
     private
 
     def assert_existence(type, id, obj, message=nil)
@@ -194,11 +199,6 @@ module StripeMock
         raise Stripe::InvalidRequestError.new(msg, type.to_s, http_status: 404)
       end
       obj
-    end
-
-    def new_id(prefix)
-      # Stripe ids must be strings
-      "#{StripeMock.global_id_prefix}#{prefix}_#{@id_counter += 1}"
     end
 
     def new_balance_transaction(prefix, params = {})

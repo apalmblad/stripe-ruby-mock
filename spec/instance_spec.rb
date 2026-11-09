@@ -14,6 +14,11 @@ describe StripeMock::Instance do
   before { StripeMock.start }
   after { StripeMock.stop }
 
+  it "generates unique ids with the given prefix" do
+    expect(StripeMock.instance.new_id("du")).to match(/\A#{StripeMock.global_id_prefix}du_\d+\z/)
+    expect(StripeMock.instance.new_id("du")).not_to eq(StripeMock.instance.new_id("du"))
+  end
+
   it "handles both string and symbol hash keys" do
     symbol_params = stripe_helper.create_product_params(
       :name => "Symbol Product",
