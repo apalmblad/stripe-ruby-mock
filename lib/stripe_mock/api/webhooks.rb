@@ -71,6 +71,7 @@ module StripeMock
         'customer.subscription.trial_will_end',
         'customer.subscription.updated',
         'customer.updated',
+        'customer_cash_balance_transaction.created',
         'invoice.created',
         'invoice.finalized',
         'invoice.paid',
