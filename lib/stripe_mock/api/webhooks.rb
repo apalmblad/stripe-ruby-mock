@@ -16,19 +16,17 @@ module StripeMock
     json = Stripe::Util.symbolize_names(json)
     params = Stripe::Util.symbolize_names(params)
     json[:account] = params.delete(:account) if params.key?(:account)
-    json[:data][:object] = ApiVersions.response(Util.rmerge(json[:data][:object], params))
-    json[:api_version] = ApiVersions.version || json[:api_version]
+    headers = {stripe_version: params.delete(:api_version)} if params.key?(:api_version)
+    json[:data][:object] = ApiVersions.response(Util.rmerge(json[:data][:object], params), headers)
+    json[:api_version] = ApiVersions.version(headers) || json[:api_version]
     json.delete(:id)
     json[:created] = params[:created] || Time.now.to_i
 
-    if @state == 'local'
-      event_data = instance.generate_webhook_event(json)
-    elsif @state == 'remote'
-      event_data = client.generate_webhook_event(json)
-    else
-      raise UnstartedStateError
+    case @state
+    when 'local' then instance.generate_webhook_event(json)
+    when 'remote' then client.generate_webhook_event(json)
+    else (@webhook_instance ||= Instance.new).generate_webhook_event(json)
     end
-    event_data
   end
 
   def self.mock_webhook_event(type, params={})
