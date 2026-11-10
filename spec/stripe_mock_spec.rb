@@ -62,6 +62,21 @@ describe StripeMock do
     StripeMock.stop
   end
 
+  it "builds a webhook event without starting" do
+    event = StripeMock.mock_webhook_event('charge.dispute.created', amount: 1000)
+
+    expect(event.id).to start_with("#{StripeMock.global_id_prefix}evt_")
+    expect(event.data.object.amount).to eq(1000)
+    expect(StripeMock.mock_webhook_event('charge.dispute.created').id).not_to eq(event.id)
+  end
+
+  it "stamps a webhook event with the given api_version" do
+    payload = StripeMock.mock_webhook_payload('charge.dispute.created', api_version: '2025-07-30.basil')
+
+    expect(payload[:api_version]).to eq('2025-07-30.basil')
+    expect(payload[:data][:object]).not_to have_key(:api_version)
+  end
+
   it "throws an error when trying to prepare an error before starting" do
     expect { StripeMock.prepare_error(StandardError.new) }.to raise_error {|e|
       expect(e).to be_a(StripeMock::UnstartedStateError)
